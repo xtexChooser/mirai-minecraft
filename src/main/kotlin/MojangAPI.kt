@@ -1,14 +1,16 @@
 package com.xtex.mirai.minecraft
 
-import com.xtex.mirai.minecraft.data.mojang.UUIDToNameHistoryResponse
-import com.xtex.mirai.minecraft.data.mojang.UUIDToSkinResponse
-import com.xtex.mirai.minecraft.data.mojang.UsernameToUUIDResponse
+import com.xtex.mirai.minecraft.data.mojang.*
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.decodeFromString
+import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import net.mamoe.mirai.utils.info
+import okhttp3.MediaType
+import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
 import okhttp3.Request
+import okhttp3.RequestBody.Companion.toRequestBody
 import okhttp3.ResponseBody
 
 object MojangAPI {
@@ -56,6 +58,18 @@ object MojangAPI {
                 .build())
             .execute()
         MinecraftPlugin.logger.info { "Got $response for $uuid when UUID to skin" }
+        return Json.decodeFromString(response.body!!.string())
+    }
+
+    @OptIn(ExperimentalSerializationApi::class)
+    fun callStatistics(metricKeys: List<String>) : StatisticsResponse {
+        val response = httpClient.newCall(
+            Request.Builder()
+                .url("https://api.mojang.com/orders/statistics")
+                .post(Json.encodeToString(StatisticsRequest(metricKeys)).toRequestBody("application/json".toMediaType()))
+                .build())
+            .execute()
+        MinecraftPlugin.logger.info { "Got $response for $metricKeys when fetching statistics" }
         return Json.decodeFromString(response.body!!.string())
     }
 

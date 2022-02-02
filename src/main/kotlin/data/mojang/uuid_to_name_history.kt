@@ -7,8 +7,6 @@ typealias UUIDToNameHistoryResponse = Array<UUIDToNameHistoryElement>
 
 @Serializable
 data class UUIDToNameHistoryElement(
-    @SerialName("name")
     val name: String,
-    @SerialName("changedToAt")
     val changedToAt: Long? = null
 )

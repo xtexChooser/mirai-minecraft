@@ -85,6 +85,20 @@ object MinecraftCommand : CompositeCommand(
         }
     }
 
+    @SubCommand("stat", "statistics")
+    @Description("查询Minecraft")
+    suspend fun CommandSender.statistics() {
+        sendMessage(buildMessageChain {
+            +"===Mojang订单统计===\n"
+            +"Minecraft：${MojangAPI.callStatistics(listOf("item_sold_minecraft")).buildMessage()}\n"
+            +"Minecraft预付卡赎回：${MojangAPI.callStatistics(listOf("prepaid_card_redeemed_minecraft")).buildMessage()}\n"
+            +"Minecraft地下城：${MojangAPI.callStatistics(listOf("item_sold_dungeons")).buildMessage()}\n"
+            +"Cobalt：${MojangAPI.callStatistics(listOf("item_sold_cobalt")).buildMessage()}\n"
+            +"Cobalt预付卡赎回：${MojangAPI.callStatistics(listOf("prepaid_card_redeemed_cobalt")).buildMessage()}\n"
+            +"Scrolls：${MojangAPI.callStatistics(listOf("item_sold_scrolls")).buildMessage()}\n"
+        })
+    }
+
     class PlayerInfoDisplayStrategy(private val username: String) : ForwardMessage.DisplayStrategy {
 
         override fun generateTitle(forward: RawForwardMessage): String = "$username 的Minecraft玩家信息"
